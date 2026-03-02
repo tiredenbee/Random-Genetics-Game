@@ -5,7 +5,7 @@ const GENES = {
     A: { agouti: 'A', nonAgouti: 'a' },
     Mc: { mackerel: 'Mc', classic: 'mc' },
     W: { dominantWhite: 'WD', spotting: 'S', noWhite: 'w' },
-    I: { inhibitor: 'I', nonInhibitor: 'i' } // New Inhibitor Gene
+    I: { inhibitor: 'I', nonInhibitor: 'i' }
 };
 
 let cattery = [];
@@ -22,7 +22,6 @@ class Cat {
         const whiteAlleles = [this.genotype.w1, this.genotype.w2];
         if (whiteAlleles.includes('WD')) return "White";
 
-        // 1. Base Colors
         const b = [this.genotype.b1, this.genotype.b2];
         let base = b.includes('B') ? "Black" : (b.includes('b') ? "Chocolate" : "Cinnamon");
 
@@ -30,7 +29,6 @@ class Cat {
         const isInhibitor = [this.genotype.i1, this.genotype.i2].includes('I');
         const isAgouti = [this.genotype.a1, this.genotype.a2].includes('A');
 
-        // 2. Red/Orange Logic
         let isRed = false;
         let isTortie = false;
         if (this.gender === "Male") {
@@ -41,12 +39,10 @@ class Cat {
             isTortie = o.includes('O') && o.includes('o');
         }
 
-        // 3. Dilution Mapping
         const diluteMap = { "Black": "Blue", "Chocolate": "Lilac", "Cinnamon": "Fawn", "Red": "Cream" };
         let mainColor = isDilute ? diluteMap[base] : base;
         let redColor = isDilute ? "Cream" : "Red";
 
-        // 4. Pattern & Inhibitor Naming
         let effect = "";
         if (isInhibitor) {
             effect = isAgouti || (isRed && !isTortie) ? "Silver " : "Smoke ";
@@ -143,7 +139,6 @@ function renderCattery() {
         const div = document.createElement('div');
         const p = cat.phenotype.toLowerCase();
         
-        // Find base colors for gradient
         let bgStyle = "";
         if (p.includes('-')) {
             const parts = p.split(' ')[0].split('-');
@@ -162,14 +157,21 @@ function renderCattery() {
         div.onclick = () => selectCat(index);
         
         const oG = cat.gender === "Male" ? `${cat.genotype.o1}Y` : `${cat.genotype.o1}${cat.genotype.o2}`;
+        // Stripped labels from genotype display
+        const dna = `
+            ${cat.genotype.b1}${cat.genotype.b2} 
+            ${cat.genotype.d1}${cat.genotype.d2} 
+            ${oG} 
+            ${cat.genotype.a1}${cat.genotype.a2} 
+            ${cat.genotype.mc1}${cat.genotype.mc2} 
+            ${cat.genotype.w1}${cat.genotype.w2} 
+            ${cat.genotype.i1}${cat.genotype.i2}
+        `;
+
         div.innerHTML = `
             <div class="gender-tag">${cat.gender === "Male" ? '♂' : '♀'}</div>
             <strong>${cat.phenotype}</strong>
-            <span class="genotype">
-                B:${cat.genotype.b1}${cat.genotype.b2} D:${cat.genotype.d1}${cat.genotype.d2} 
-                O:${oG} A:${cat.genotype.a1}${cat.genotype.a2} 
-                W:${cat.genotype.w1}${cat.genotype.w2} I:${cat.genotype.i1}${cat.genotype.i2}
-            </span>
+            <span class="genotype">${dna}</span>
         `;
         container.appendChild(div);
     });

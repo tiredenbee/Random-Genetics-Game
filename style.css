@@ -19,19 +19,25 @@ button:hover { transform: translateY(-2px); }
 .cat-card {
     border: 3px solid transparent; border-radius: 16px; padding: 35px 10px 15px 10px;
     text-align: center; position: relative; cursor: pointer; transition: 0.3s;
-    background-blend-mode: overlay;
+    /* Blend mode set to multiply so patterns show over gradients */
+    background-blend-mode: multiply; 
 }
 
 .cat-card.selected { border-color: white; box-shadow: 0 0 15px white; }
 
+/* Fixed Layering: Use multiple box shadows to ensure glow shows over white spotting */
 .inhibitor-glow {
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.4);
+    box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.6) !important;
+}
+
+.white-spotting.inhibitor-glow {
+    box-shadow: inset 0 -30px 0 0 #ffffff, inset 0 0 25px rgba(255, 255, 255, 0.6) !important;
 }
 
 .pattern-tabby {
     background-image: repeating-linear-gradient(
         45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 10px,
-        rgba(0, 0, 0, 0.2) 10px, rgba(0, 0, 0, 0.2) 20px
+        rgba(0, 0, 0, 0.25) 10px, rgba(0, 0, 0, 0.25) 20px
     ) !important;
 }
 
@@ -45,4 +51,5 @@ button:hover { transform: translateY(-2px); }
     display: block; font-size: 0.6rem; background: rgba(0,0,0,0.6);
     padding: 8px; border-radius: 8px; font-family: monospace; color: #fff;
     line-height: 1.5; pointer-events: none;
+    letter-spacing: 1px;
 }
