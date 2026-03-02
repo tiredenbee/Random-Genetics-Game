@@ -1,23 +1,15 @@
-// Genetic Constants
-const GENES = {
-    B: { dominant: 'B', medium: 'b', recessive: 'bl' },
-    D: { dominant: 'D', recessive: 'd' }
-};
-
 let cattery = [];
 let selectedCats = [];
 
 class Cat {
-    constructor(genotype, name) {
+    constructor(genotype) {
         this.genotype = genotype;
-        this.name = name;
         this.phenotype = this.determinePhenotype();
     }
 
     determinePhenotype() {
         let color = "Black";
         const bAlleles = [this.genotype.b1, this.genotype.b2];
-        
         if (bAlleles.includes('B')) color = "Black";
         else if (bAlleles.includes('b')) color = "Chocolate";
         else color = "Cinnamon";
@@ -30,23 +22,18 @@ class Cat {
             "Chocolate": "Lilac",
             "Cinnamon": "Fawn"
         };
-
         return isDilute ? diluteMap[color] : color;
     }
 }
 
-// Core Gameplay Logic
-function breed(parent1, parent2) {
+function breed(p1, p2) {
     const pick = (a, b) => Math.random() > 0.5 ? a : b;
-    
-    const childGenotype = {
-        b1: pick(parent1.genotype.b1, parent1.genotype.b2),
-        b2: pick(parent2.genotype.b1, parent2.genotype.b2),
-        d1: pick(parent1.genotype.d1, parent1.genotype.d2),
-        d2: pick(parent2.genotype.d1, parent2.genotype.d2)
-    };
-    
-    return new Cat(childGenotype, "Kitten");
+    return new Cat({
+        b1: pick(p1.genotype.b1, p1.genotype.b2),
+        b2: pick(p2.genotype.b1, p2.genotype.b2),
+        d1: pick(p1.genotype.d1, p1.genotype.d2),
+        d2: pick(p2.genotype.d1, p2.genotype.d2)
+    });
 }
 
 function generateRandomCat() {
@@ -58,22 +45,10 @@ function generateRandomCat() {
         d1: allelesD[Math.floor(Math.random() * 2)],
         d2: allelesD[Math.floor(Math.random() * 2)]
     };
-    cattery.push(new Cat(randomG, "Rescue"));
+    cattery.push(new Cat(randomG));
     renderCattery();
 }
 
-function breedSelected() {
-    if (selectedCats.length === 2) {
-        const kitten = breed(cattery[selectedCats[0]], cattery[selectedCats[1]]);
-        cattery.push(kitten);
-        selectedCats = [];
-        renderCattery();
-    } else {
-        alert("Select two cats to breed!");
-    }
-}
-
-// UI Rendering
 function selectCat(index) {
     if (selectedCats.includes(index)) {
         selectedCats = selectedCats.filter(i => i !== index);
@@ -81,6 +56,14 @@ function selectCat(index) {
         selectedCats.push(index);
     }
     renderCattery();
+}
+
+function breedSelected() {
+    if (selectedCats.length === 2) {
+        cattery.push(breed(cattery[selectedCats[0]], cattery[selectedCats[1]]));
+        selectedCats = [];
+        renderCattery();
+    }
 }
 
 function renderCattery() {
@@ -92,32 +75,25 @@ function renderCattery() {
         div.onclick = () => selectCat(index);
         div.innerHTML = `
             <span class="cat-icon">🐈</span>
-            <strong>${cat.phenotype}</strong>
+            <strong>${cat.phenotype}</strong><br>
             <span class="genotype">${cat.genotype.b1}${cat.genotype.b2} ${cat.genotype.d1}${cat.genotype.d2}</span>
         `;
         container.appendChild(div);
     });
 }
 
-// Theme Management
+// THEME TOGGLE LOGIC
 function toggleTheme() {
-    const body = document.body;
-    const btn = document.getElementById('theme-toggle');
-    body.classList.toggle('dark-mode');
-    
-    if (body.classList.contains('dark-mode')) {
-        btn.innerText = "☀️";
-        localStorage.setItem('theme', 'dark');
-    } else {
-        btn.innerText = "🌙";
-        localStorage.setItem('theme', 'light');
-    }
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.getElementById('theme-icon').innerText = isDark ? "☀️" : "🌙";
+    localStorage.setItem('catTheme', isDark ? 'dark' : 'light');
 }
 
-// Load saved theme on startup
+// Initial Load
 window.onload = () => {
-    if (localStorage.getItem('theme') === 'dark') {
+    if (localStorage.getItem('catTheme') === 'dark') {
         document.body.classList.add('dark-mode');
-        document.getElementById('theme-toggle').innerText = "☀️";
+        document.getElementById('theme-icon').innerText = "☀️";
     }
+    renderCattery();
 };
