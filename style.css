@@ -8,112 +8,88 @@
     --text-sub: #9aa5ce;
     --genotype-bg: rgba(0, 0, 0, 0.3);
     --border-radius: 16px;
-    --shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* Phenotype Color Mapping */
+/* Color Classes */
 .color-black { background-color: #2a2e3d !important; }
 .color-blue { background-color: #5d667a !important; }
 .color-chocolate { background-color: #4a3737 !important; }
 .color-lilac { background-color: #7a6e7a !important; }
 .color-cinnamon { background-color: #6e4e37 !important; }
 .color-fawn { background-color: #968375 !important; }
+.color-red { background-color: #a34e2e !important; }
+.color-cream { background-color: #c29d70 !important; }
+/* Tortie uses a gradient to represent the two colors */
+.color-tortie { background: linear-gradient(45deg, #2a2e3d 50%, #a34e2e 50%) !important; }
+.color-blue-cream { background: linear-gradient(45deg, #5d667a 50%, #c29d70 50%) !important; }
 
 body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
-    margin: 0;
     padding: 40px 20px;
     display: flex;
     justify-content: center;
-    line-height: 1.6;
 }
 
-#game-container {
-    max-width: 1000px;
-    width: 100%;
-}
+#game-container { max-width: 1000px; width: 100%; }
+.header-row { text-align: center; margin-bottom: 40px; }
+h1 { color: var(--primary); font-size: 2.5rem; }
 
-.header-row {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-h1 {
-    margin: 0;
-    color: var(--primary);
-    font-weight: 800;
-    font-size: 2.5rem;
-    letter-spacing: -1px;
-}
-
-#controls {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 50px;
-}
+#controls { display: flex; justify-content: center; gap: 20px; margin-bottom: 50px; }
 
 button {
     background-color: var(--primary);
     color: var(--bg-color);
     border: none;
     padding: 14px 28px;
-    font-size: 1rem;
     font-weight: 700;
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: 0.2s;
 }
 
-button:hover {
-    background-color: var(--secondary);
-    transform: translateY(-3px);
-}
-
+button:hover { transform: translateY(-3px); background-color: var(--secondary); }
 .breed-btn { background-color: var(--accent); }
 
-.cat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 25px;
-}
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; }
 
 .cat-card {
     background: var(--card-bg);
     border: 3px solid transparent;
     border-radius: var(--border-radius);
-    padding: 30px 15px;
+    padding: 35px 15px 25px 15px;
     text-align: center;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow);
     position: relative;
     cursor: pointer;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    transition: 0.3s;
 }
 
-.cat-card:hover {
-    transform: translateY(-5px);
-}
+.cat-card.selected { border-color: #fff; }
 
-.cat-card.selected {
-    border-color: #fff;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+.gender-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255,255,255,0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 .cat-card strong {
     display: block;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-bottom: 12px;
-    color: #fff;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .genotype {
-    font-size: 0.8rem;
-    color: #fff;
+    font-size: 0.75rem;
     background: var(--genotype-bg);
-    padding: 5px 12px;
+    padding: 4px 10px;
     border-radius: 20px;
-    font-family: 'Consolas', monospace;
+    font-family: monospace;
 }
