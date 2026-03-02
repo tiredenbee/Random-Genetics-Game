@@ -6,11 +6,12 @@
     --accent: #f7768e;
     --text-main: #c0caf5;
     --text-sub: #9aa5ce;
-    --genotype-bg: rgba(0, 0, 0, 0.3);
+    --genotype-bg: rgba(0, 0, 0, 0.4);
     --border-radius: 16px;
 }
 
 /* Color Classes */
+.color-white { background-color: #ffffff !important; color: #1a1b26 !important; }
 .color-black { background-color: #2a2e3d !important; }
 .color-blue { background-color: #5d667a !important; }
 .color-chocolate { background-color: #4a3737 !important; }
@@ -19,143 +20,90 @@
 .color-fawn { background-color: #968375 !important; }
 .color-red { background-color: #a34e2e !important; }
 .color-cream { background-color: #c29d70 !important; }
-/* Tortie uses a gradient to represent the two colors */
-.color-tortie { background: linear-gradient(45deg, #2a2e3d 50%, #a34e2e 50%) !important; }
-.color-blue-cream { background: linear-gradient(45deg, #5d667a 50%, #c29d70 50%) !important; }
+.color-tortie, .color-blue-cream, .color-blue-patched-tabby { 
+    background: linear-gradient(45deg, #2a2e3d 50%, #a34e2e 50%) !important; 
+}
+
+.pattern-tabby {
+    background-image: repeating-linear-gradient(
+        45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 10px,
+        rgba(0, 0, 0, 0.2) 10px, rgba(0, 0, 0, 0.2) 20px
+    ) !important;
+}
+
+.white-spotting { box-shadow: inset 0 -35px 0 0 #ffffff !important; }
 
 body {
     font-family: 'Segoe UI', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
-    padding: 40px 20px;
+    padding: 20px;
     display: flex;
     justify-content: center;
 }
 
-#game-container { max-width: 1000px; width: 100%; }
-.header-row { text-align: center; margin-bottom: 40px; }
-h1 { color: var(--primary); font-size: 2.5rem; }
+#game-container { max-width: 1100px; width: 100%; }
+.header-row { text-align: center; margin-bottom: 20px; }
+h1 { color: var(--primary); }
 
-#controls { display: flex; justify-content: center; gap: 20px; margin-bottom: 50px; }
+#controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
 
 button {
     background-color: var(--primary);
     color: var(--bg-color);
     border: none;
-    padding: 14px 28px;
+    padding: 12px 20px;
     font-weight: 700;
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: 0.2s;
 }
 
-button:hover { transform: translateY(-3px); background-color: var(--secondary); }
 .breed-btn { background-color: var(--accent); }
 
-.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; }
+.cat-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 15px; 
+}
 
 .cat-card {
     background: var(--card-bg);
     border: 3px solid transparent;
     border-radius: var(--border-radius);
-    padding: 35px 15px 25px 15px;
+    padding: 30px 10px 15px 10px;
     text-align: center;
     position: relative;
     cursor: pointer;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    transition: 0.3s;
+    background-blend-mode: multiply;
 }
 
-.cat-card.selected { border-color: #fff; }
+.cat-card.selected { border-color: white; }
 
 .gender-tag {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(255,255,255,0.2);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: bold;
+    top: 8px; left: 8px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.75rem;
 }
 
 .cat-card strong {
     display: block;
-    font-size: 1.1rem;
-    margin-bottom: 12px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 .genotype {
-    font-size: 0.75rem;
+    display: block;
+    font-size: 0.65rem;
     background: var(--genotype-bg);
-    padding: 4px 10px;
-    border-radius: 20px;
+    padding: 6px;
+    border-radius: 8px;
     font-family: monospace;
-}
-/* Color Classes remain the same, adding Pattern Overlays */
-
-.pattern-tabby {
-    background-image: repeating-linear-gradient(
-        45deg,
-        rgba(0, 0, 0, 0),
-        rgba(0, 0, 0, 0) 10px,
-        rgba(0, 0, 0, 0.15) 10px,
-        rgba(0, 0, 0, 0.15) 20px
-    ) !important;
-}
-
-/* Base card styling update */
-.cat-card {
-    background: var(--card-bg);
-    border: 3px solid transparent;
-    border-radius: var(--border-radius);
-    padding: 35px 15px 25px 15px;
-    text-align: center;
-    position: relative;
-    cursor: pointer;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    transition: 0.3s;
-    background-blend-mode: multiply; /* Allows pattern to sit nicely on color */
-}
-
-/* Ensure gender tag stays on top of patterns */
-.gender-tag {
-    z-index: 2;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(0,0,0,0.4);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.8rem;
-}
-
-.color-blue-patched-tabby { background: linear-gradient(45deg, #5d667a 50%, #c29d70 50%) !important; }
-.color-blue-cream { background: linear-gradient(45deg, #5d667a 50%, #c29d70 50%) !important; }
-
-/* Previous colors remain... plus new white ones */
-.color-white { background-color: #ffffff !important; color: #1a1b26 !important; }
-.color-white strong { color: #1a1b26 !important; text-shadow: none !important; }
-.color-white .genotype { background: rgba(0,0,0,0.1); color: #1a1b26; }
-
-/* White Spotting Visual Effect */
-.white-spotting {
-    box-shadow: inset 0 -40px 0 0 #ffffff !important;
-}
-
-/* Ensure patterns and colors blend correctly */
-.cat-card {
-    background: var(--card-bg);
-    border: 3px solid transparent;
-    border-radius: var(--border-radius);
-    padding: 35px 15px 25px 15px;
-    text-align: center;
-    position: relative;
-    cursor: pointer;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    transition: 0.3s;
-    background-blend-mode: multiply;
-    overflow: hidden; /* Clips the spotting shadow */
+    line-height: 1.4;
+    word-break: break-all;
+    color: #fff;
 }
