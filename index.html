@@ -2,60 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cat Genetics Lab</title>
+    <title>Cat Genetics Lab | Research Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="tabs">
         <div class="nav-group">
             <button class="tab-btn active" onclick="switchTab('focus')">Focus View</button>
-            <button class="tab-btn" onclick="switchTab('males')">Males</button>
-            <button class="tab-btn" onclick="switchTab('females')">Females</button>
-            <button class="tab-btn" onclick="switchTab('full-pedigree')">Full Pedigree</button>
+            <button class="tab-btn" onclick="switchTab('males')">Male Cattery</button>
+            <button class="tab-btn" onclick="switchTab('females')">Female Cattery</button>
+            <button class="tab-btn" onclick="switchTab('pedigree')">Full Pedigree</button>
         </div>
     </nav>
 
     <div class="game-container">
-        <div id="controls" class="centered-controls">
-            <button class="corner-btn success" onclick="generateRandomCat()">Rescue a Cat</button>
-            <button class="corner-btn luck" onclick="breedSelected()">Breed Selected</button>
+        <div class="centered-header">
+            <button class="action-btn success-btn" onclick="generateRandomCat()">Rescue Cat</button>
+            <button class="action-btn breed-btn" onclick="breedSelected()">Breed Selected</button>
         </div>
 
-        <div id="focus-area" class="tab-content active">
-            <div class="workspace-layout">
-                <div class="focus-main">
-                    <div id="active-cat-display" class="glass-card">
-                        <p style="text-align: center; color: var(--text-dim); padding: 50px;">Rescue or select a cat to begin.</p>
+        <section id="focus-tab" class="tab-content active">
+            <div class="workspace-grid">
+                <div class="focus-panel">
+                    <div id="active-cat-display" class="glass-card main-display">
+                        <p class="empty-msg">Rescue or select a cat to view genetic data</p>
                     </div>
                 </div>
-                
-                <div class="breeding-sidebar glass-card">
-                    <h3 class="section-title">Quick Select</h3>
-                    <div id="sidebar-males" class="sidebar-scroll">
-                        <small>Males</small>
-                        <div class="sidebar-grid" id="side-m-grid"></div>
+
+                <aside class="breeding-sidebar glass-card">
+                    <h3 class="sidebar-title">Quick Selection</h3>
+                    <div class="sidebar-section">
+                        <span class="gender-label">Males</span>
+                        <div id="side-males-grid" class="mini-grid"></div>
                     </div>
-                    <div id="sidebar-females" class="sidebar-scroll">
-                        <small>Females</small>
-                        <div class="sidebar-grid" id="side-f-grid"></div>
+                    <div class="sidebar-section">
+                        <span class="gender-label">Females</span>
+                        <div id="side-females-grid" class="mini-grid"></div>
                     </div>
-                </div>
+                </aside>
             </div>
-        </div>
+        </section>
 
-        <div id="males-area" class="tab-content">
+        <section id="males-tab" class="tab-content">
             <div class="automation-grid" id="males-grid"></div>
-        </div>
-        <div id="females-area" class="tab-content">
+        </section>
+
+        <section id="females-tab" class="tab-content">
             <div class="automation-grid" id="females-grid"></div>
-        </div>
-        
-        <div id="full-pedigree-area" class="tab-content">
-            <div class="glass-card full-pedigree-viewer" id="full-tree-container">
-                <h2 class="section-title">Global Breeding Tree</h2>
-                <div id="global-tree-root"></div>
+        </section>
+
+        <section id="pedigree-tab" class="tab-content">
+            <div class="glass-card full-pedigree-container">
+                <h2 class="section-title">Global Breeding History</h2>
+                <div id="global-tree-display" class="tree-viewer"></div>
             </div>
-        </div>
+        </section>
     </div>
 
     <script src="script.js"></script>
