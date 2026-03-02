@@ -7,32 +7,36 @@
 }
 
 body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text-main); padding: 20px; display: flex; justify-content: center; }
-#game-container { max-width: 1200px; width: 100%; }
+#game-container { max-width: 1300px; width: 100%; }
 .header-row { text-align: center; }
 #controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
 button { background: var(--primary); color: var(--bg-color); border: none; padding: 12px 20px; font-weight: 700; border-radius: 12px; cursor: pointer; transition: 0.2s; }
 button:hover { transform: translateY(-2px); }
 .breed-btn { background: var(--accent); }
 
-.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
 
 .cat-card {
     border: 3px solid transparent; border-radius: 16px; padding: 35px 10px 15px 10px;
     text-align: center; position: relative; cursor: pointer; transition: 0.3s;
-    /* Blend mode set to multiply so patterns show over gradients */
     background-blend-mode: multiply; 
 }
 
 .cat-card.selected { border-color: white; box-shadow: 0 0 15px white; }
 
-/* Fixed Layering: Use multiple box shadows to ensure glow shows over white spotting */
-.inhibitor-glow {
-    box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.6) !important;
+/* Pointed Style: Darker core, lighter periphery */
+.colorpoint-style {
+    box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.5) !important;
 }
 
-.white-spotting.inhibitor-glow {
-    box-shadow: inset 0 -30px 0 0 #ffffff, inset 0 0 25px rgba(255, 255, 255, 0.6) !important;
+.inhibitor-glow { box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.6) !important; }
+
+/* Stacking effects */
+.colorpoint-style.inhibitor-glow {
+    box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.4), inset 0 0 25px rgba(255, 255, 255, 0.6) !important;
 }
+
+.white-spotting { box-shadow: inset 0 -30px 0 0 #ffffff !important; }
 
 .pattern-tabby {
     background-image: repeating-linear-gradient(
@@ -41,15 +45,10 @@ button:hover { transform: translateY(-2px); }
     ) !important;
 }
 
-.white-spotting { box-shadow: inset 0 -30px 0 0 #ffffff !important; }
-
 .gender-tag { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 8px; font-size: 0.8rem; z-index: 2; }
-
-.cat-card strong { display: block; font-size: 0.95rem; margin-bottom: 12px; text-shadow: 0 1px 4px rgba(0,0,0,0.8); color: #fff; z-index: 1; position: relative; }
-
+.cat-card strong { display: block; font-size: 0.9rem; margin-bottom: 12px; text-shadow: 0 1px 4px rgba(0,0,0,0.8); color: #fff; z-index: 1; position: relative; }
 .genotype {
-    display: block; font-size: 0.6rem; background: rgba(0,0,0,0.6);
+    display: block; font-size: 0.55rem; background: rgba(0,0,0,0.6);
     padding: 8px; border-radius: 8px; font-family: monospace; color: #fff;
-    line-height: 1.5; pointer-events: none;
-    letter-spacing: 1px;
+    line-height: 1.5; pointer-events: none; letter-spacing: 0.5px;
 }

@@ -5,7 +5,8 @@ const GENES = {
     A: { agouti: 'A', nonAgouti: 'a' },
     Mc: { mackerel: 'Mc', classic: 'mc' },
     W: { dominantWhite: 'WD', spotting: 'S', noWhite: 'w' },
-    I: { inhibitor: 'I', nonInhibitor: 'i' }
+    I: { inhibitor: 'I', nonInhibitor: 'i' },
+    C: { full: 'C', sepia: 'cb', siamese: 'cs', albino: 'c' } // Colorpoint Locus
 };
 
 let cattery = [];
@@ -20,8 +21,13 @@ class Cat {
 
     determinePhenotype() {
         const whiteAlleles = [this.genotype.w1, this.genotype.w2];
+        const c = [this.genotype.c1, this.genotype.c2];
+        
+        // 1. Epistatic Masks (White Dominant or Albino)
         if (whiteAlleles.includes('WD')) return "White";
+        if (c.every(al => al === 'c')) return "Albino";
 
+        // 2. Base Colors
         const b = [this.genotype.b1, this.genotype.b2];
         let base = b.includes('B') ? "Black" : (b.includes('b') ? "Chocolate" : "Cinnamon");
 
@@ -29,6 +35,7 @@ class Cat {
         const isInhibitor = [this.genotype.i1, this.genotype.i2].includes('I');
         const isAgouti = [this.genotype.a1, this.genotype.a2].includes('A');
 
+        // 3. Red/Orange Logic
         let isRed = false;
         let isTortie = false;
         if (this.gender === "Male") {
@@ -43,6 +50,15 @@ class Cat {
         let mainColor = isDilute ? diluteMap[base] : base;
         let redColor = isDilute ? "Cream" : "Red";
 
+        // 4. Colorpoint Logic
+        let pointSuffix = "";
+        if (!c.includes('C')) { // If not full color
+            if (c.includes('cb') && c.includes('cs')) pointSuffix = " Mink Point";
+            else if (c.includes('cb')) pointSuffix = " Sepia Point";
+            else if (c.includes('cs')) pointSuffix = " Siamese Point";
+        }
+
+        // 5. Pattern & Inhibitor
         let effect = "";
         if (isInhibitor) {
             effect = isAgouti || (isRed && !isTortie) ? "Silver " : "Smoke ";
@@ -61,6 +77,7 @@ class Cat {
             finalName = `${effect}${isRed ? redColor : mainColor}${pattern}`;
         }
 
+        finalName += pointSuffix;
         if (whiteAlleles.includes('S')) finalName += " and White";
 
         return finalName;
@@ -87,7 +104,9 @@ function breed(p1, p2) {
         w1: pick(mother.genotype.w1, mother.genotype.w2),
         w2: pick(father.genotype.w1, father.genotype.w2),
         i1: pick(mother.genotype.i1, mother.genotype.i2),
-        i2: pick(father.genotype.i1, father.genotype.i2)
+        i2: pick(father.genotype.i1, father.genotype.i2),
+        c1: pick(mother.genotype.c1, mother.genotype.c2),
+        c2: pick(father.genotype.c1, father.genotype.c2)
     }, gender);
 }
 
@@ -101,7 +120,8 @@ function generateRandomCat() {
         a1: r(['A', 'a']), a2: r(['A', 'a']),
         mc1: r(['Mc', 'mc']), mc2: r(['Mc', 'mc']),
         w1: r(['WD', 'S', 'w', 'w', 'w']), w2: r(['WD', 'S', 'w', 'w', 'w']),
-        i1: r(['I', 'i', 'i']), i2: r(['I', 'i', 'i'])
+        i1: r(['I', 'i', 'i']), i2: r(['I', 'i', 'i']),
+        c1: r(['C', 'C', 'cb', 'cs', 'c']), c2: r(['C', 'C', 'cb', 'cs', 'c'])
     }, gender));
     renderCattery();
 }
@@ -132,7 +152,7 @@ function renderCattery() {
     const colorMap = {
         'black': '#2a2e3d', 'blue': '#5d667a', 'chocolate': '#4a3737', 
         'lilac': '#7a6e7a', 'cinnamon': '#6e4e37', 'fawn': '#968375',
-        'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff'
+        'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff', 'albino': '#ffffff'
     };
 
     cattery.forEach((cat, index) => {
@@ -152,20 +172,17 @@ function renderCattery() {
         if (p.includes('tabby') || p.includes('torbie')) div.classList.add('pattern-tabby');
         if (p.includes('and white')) div.classList.add('white-spotting');
         if (p.includes('smoke') || p.includes('silver')) div.classList.add('inhibitor-glow');
+        if (p.includes('point')) div.classList.add('colorpoint-style');
 
         div.style.background = bgStyle;
         div.onclick = () => selectCat(index);
         
         const oG = cat.gender === "Male" ? `${cat.genotype.o1}Y` : `${cat.genotype.o1}${cat.genotype.o2}`;
-        // Stripped labels from genotype display
         const dna = `
-            ${cat.genotype.b1}${cat.genotype.b2} 
-            ${cat.genotype.d1}${cat.genotype.d2} 
-            ${oG} 
-            ${cat.genotype.a1}${cat.genotype.a2} 
-            ${cat.genotype.mc1}${cat.genotype.mc2} 
-            ${cat.genotype.w1}${cat.genotype.w2} 
-            ${cat.genotype.i1}${cat.genotype.i2}
+            ${cat.genotype.b1}${cat.genotype.b2} ${cat.genotype.d1}${cat.genotype.d2} 
+            ${oG} ${cat.genotype.a1}${cat.genotype.a2} 
+            ${cat.genotype.mc1}${cat.genotype.mc2} ${cat.genotype.w1}${cat.genotype.w2} 
+            ${cat.genotype.i1}${cat.genotype.i2} ${cat.genotype.c1}${cat.genotype.c2}
         `;
 
         div.innerHTML = `
