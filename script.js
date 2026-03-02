@@ -1,46 +1,42 @@
 const GENES = {
-    B: { dominant: 'B', medium: 'b', recessive: 'bl' },
-    D: { dominant: 'D', recessive: 'd' },
-    O: { red: 'O', nonRed: 'o' },
-    A: { agouti: 'A', nonAgouti: 'a' },
-    Mc: { mackerel: 'Mc', classic: 'mc' },
-    W: { dominantWhite: 'WD', spotting: 'S', noWhite: 'w' },
-    I: { inhibitor: 'I', nonInhibitor: 'i' },
-    C: { full: 'C', sepia: 'cb', siamese: 'cs', albino: 'c' },
-    Ti: { ticked: 'Ti', nonTicked: 'ti' },
-    L: { short: 'L', long: 'l' }
+    B: ['B', 'b', 'bl'], D: ['D', 'd'], O: ['O', 'o'], A: ['A', 'a'],
+    Mc: ['Mc', 'mc'], W: ['WD', 'S', 'w'], I: ['I', 'i'],
+    C: ['C', 'cb', 'cs', 'c'], Ti: ['Ti', 'ti'], L: ['L', 'l']
 };
 
 let cattery = [];
 let selectedCats = [];
+let currentView = 'focus';
 
 class Cat {
-    constructor(genotype, gender) {
-        this.genotype = genotype; 
+    constructor(genotype, gender, parents = null) {
+        this.genotype = genotype;
         this.gender = gender;
+        this.name = "Unnamed Cat";
+        this.parents = parents; // { mother: Cat, father: Cat }
         this.phenotype = this.determinePhenotype();
     }
 
     determinePhenotype() {
-        const whiteAlleles = [this.genotype.w1, this.genotype.w2];
-        const c = [this.genotype.c1, this.genotype.c2];
-        const isLonghair = [this.genotype.l1, this.genotype.l2].every(al => al === 'l');
+        const g = this.genotype;
+        const whiteAlleles = [g.w1, g.w2];
+        const c = [g.c1, g.c2];
+        const isLonghair = [g.l1, g.l2].every(al => al === 'l');
         const hairLabel = isLonghair ? "Longhair" : "Shorthair";
 
         if (whiteAlleles.includes('WD')) return `White ${hairLabel}`;
         if (c.every(al => al === 'c')) return `Albino ${hairLabel}`;
 
-        const b = [this.genotype.b1, this.genotype.b2];
-        let base = b.includes('B') ? "Black" : (b.includes('b') ? "Chocolate" : "Cinnamon");
-        const isDilute = !([this.genotype.d1, this.genotype.d2].includes('D'));
-        const isInhibitor = [this.genotype.i1, this.genotype.i2].includes('I');
-        const isAgouti = [this.genotype.a1, this.genotype.a2].includes('A');
-        const isTicked = [this.genotype.ti1, this.genotype.ti2].includes('Ti');
+        let base = [g.b1, g.b2].includes('B') ? "Black" : ([g.b1, g.b2].includes('b') ? "Chocolate" : "Cinnamon");
+        const isDilute = !([g.d1, g.d2].includes('D'));
+        const isInhibitor = [g.i1, g.i2].includes('I');
+        const isAgouti = [g.a1, g.a2].includes('A');
+        const isTicked = [g.ti1, g.ti2].includes('Ti');
 
         let isRed = false, isTortie = false;
-        if (this.gender === "Male") isRed = this.genotype.o1 === 'O';
+        if (this.gender === "Male") isRed = g.o1 === 'O';
         else {
-            const o = [this.genotype.o1, this.genotype.o2];
+            const o = [g.o1, g.o2];
             isRed = o.every(al => al === 'O');
             isTortie = o.includes('O') && o.includes('o');
         }
@@ -57,41 +53,50 @@ class Cat {
         }
 
         let effect = isInhibitor ? (isAgouti || (isRed && !isTortie) ? "Silver " : "Smoke ") : "";
-        
-        let pattern = "";
-        if (isAgouti || isRed) {
-            if (isTicked) pattern = " Ticked Tabby";
-            else pattern = [this.genotype.mc1, this.genotype.mc2].includes('Mc') ? " Mackerel Tabby" : " Classic Tabby";
-        }
+        let pattern = (isAgouti || isRed) ? (isTicked ? " Ticked Tabby" : ([g.mc1, g.mc2].includes('Mc') ? " Mackerel Tabby" : " Classic Tabby")) : "";
 
-        let finalName = "";
         const hasWhite = whiteAlleles.includes('S');
-
-        if (isTortie) {
-            if (hasWhite) {
-                finalName = isAgouti ? `${mainColor}-${redColor} Tabico` : `${mainColor}-${redColor} Calico`;
-            } else {
-                finalName = isAgouti ? `${mainColor}-${redColor} Torbie` : `${mainColor}-${redColor} Tortie`;
-            }
-            finalName = `${finalName} ${effect}`.trim();
-        } else {
-            finalName = `${effect}${isRed ? redColor : mainColor}${pattern}`;
-        }
-
-        finalName += pointSuffix;
-        if (hasWhite && !isTortie) finalName += " and White";
+        let finalName = isTortie ? (hasWhite ? (isAgouti ? "Tabico" : "Calico") : (isAgouti ? "Torbie" : "Tortie")) : `${isRed ? redColor : mainColor}${pattern}`;
         
+        if (isTortie) finalName = `${mainColor}-${redColor} ${finalName} ${effect}`.trim();
+        else finalName = `${effect}${finalName}`;
+
+        if (hasWhite && !isTortie) finalName += " and White";
         return `${finalName} ${hairLabel}`;
     }
 }
 
-function breed(p1, p2) {
+function switchTab(tab) {
+    currentView = tab;
+    document.querySelectorAll('.view-section').forEach(s => s.style.display = 'none');
+    document.getElementById(`${tab === 'focus' ? 'focus' : tab}-area`).style.display = 'block';
+    renderCattery();
+}
+
+function generateRandomCat() {
+    const gender = Math.random() > 0.5 ? "Male" : "Female";
+    const r = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const cat = new Cat({
+        b1: r(GENES.B), b2: r(GENES.B), d1: r(GENES.D), d2: r(GENES.D),
+        o1: r(GENES.O), o2: gender === "Female" ? r(GENES.O) : null,
+        a1: r(GENES.A), a2: r(GENES.A), mc1: r(GENES.Mc), mc2: r(GENES.Mc),
+        w1: r(GENES.W), w2: r(GENES.W), i1: r(GENES.I), i2: r(GENES.I),
+        c1: r(GENES.C), c2: r(GENES.C), ti1: r(GENES.Ti), ti2: r(GENES.Ti),
+        l1: r(GENES.L), l2: r(GENES.L)
+    }, gender);
+    cattery.push(cat);
+    showFocus(cat);
+}
+
+function breedSelected() {
+    if (selectedCats.length !== 2) return alert("Select one Male and one Female!");
+    const p1 = cattery[selectedCats[0]], p2 = cattery[selectedCats[1]];
     const mother = p1.gender === "Female" ? p1 : p2;
     const father = p1.gender === "Male" ? p1 : p2;
     const pick = (a, b) => Math.random() > 0.5 ? a : b;
     const gender = Math.random() > 0.5 ? "Male" : "Female";
-    
-    return new Cat({
+
+    const kitten = new Cat({
         b1: pick(mother.genotype.b1, mother.genotype.b2), b2: pick(father.genotype.b1, father.genotype.b2),
         d1: pick(mother.genotype.d1, mother.genotype.d2), d2: pick(father.genotype.d1, father.genotype.d2),
         o1: pick(mother.genotype.o1, mother.genotype.o2), o2: gender === "Female" ? father.genotype.o1 : null,
@@ -102,104 +107,83 @@ function breed(p1, p2) {
         c1: pick(mother.genotype.c1, mother.genotype.c2), c2: pick(father.genotype.c1, father.genotype.c2),
         ti1: pick(mother.genotype.ti1, mother.genotype.ti2), ti2: pick(father.genotype.ti1, father.genotype.ti2),
         l1: pick(mother.genotype.l1, mother.genotype.l2), l2: pick(father.genotype.l1, father.genotype.l2)
-    }, gender);
+    }, gender, { mother, father });
+
+    cattery.push(kitten);
+    selectedCats = [];
+    showFocus(kitten);
 }
 
-function generateRandomCat() {
-    const gender = Math.random() > 0.5 ? "Male" : "Female";
-    const r = (arr) => arr[Math.floor(Math.random() * arr.length)];
-    cattery.push(new Cat({
-        b1: r(['B', 'b', 'bl']), b2: r(['B', 'b', 'bl']),
-        d1: r(['D', 'd']), d2: r(['D', 'd']),
-        o1: r(['O', 'o']), o2: gender === "Female" ? r(['O', 'o']) : null,
-        a1: r(['A', 'a']), a2: r(['A', 'a']),
-        mc1: r(['Mc', 'mc']), mc2: r(['Mc', 'mc']),
-        w1: r(['WD', 'S', 'w', 'w', 'w']), w2: r(['WD', 'S', 'w', 'w', 'w']),
-        i1: r(['I', 'i', 'i']), i2: r(['I', 'i', 'i']),
-        c1: r(['C', 'C', 'cb', 'cs', 'c']), c2: r(['C', 'C', 'cb', 'cs', 'c']),
-        ti1: r(['Ti', 'ti', 'ti']), ti2: r(['Ti', 'ti', 'ti']),
-        l1: r(['L', 'l']), l2: r(['L', 'l'])
-    }, gender));
-    renderCattery();
+function showFocus(cat) {
+    const container = document.getElementById('active-cat-display');
+    const colorMap = { 'black': '#2a2e3d', 'blue': '#5d667a', 'chocolate': '#4a3737', 'lilac': '#7a6e7a', 'cinnamon': '#6e4e37', 'fawn': '#968375', 'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff', 'albino': '#ffffff' };
+    
+    const p = cat.phenotype.toLowerCase();
+    let bg = p.includes('-') ? `linear-gradient(45deg, ${colorMap[p.split(' ')[0].split('-')[0]]} 50%, ${colorMap[p.split(' ')[0].split('-')[1]]} 50%)` : (Object.keys(colorMap).find(c => p.includes(c)) || '#2a2e3d');
+
+    container.innerHTML = `
+        <div class="focus-card ${getClasses(p, cat)}" style="background: ${bg}">
+            <input type="text" value="${cat.name}" onchange="updateName(event, ${cattery.indexOf(cat)})" class="name-input">
+            <h2>${cat.phenotype}</h2>
+            <p class="genotype-large">${Object.values(cat.genotype).join(' ')}</p>
+        </div>
+        <div class="pedigree-box">
+            <h3>Pedigree</h3>
+            <div class="pedigree-tree">${renderPedigree(cat, 3)}</div>
+        </div>
+    `;
+    switchTab('focus');
 }
 
-function selectCat(index) {
-    if (selectedCats.includes(index)) {
-        selectedCats = selectedCats.filter(i => i !== index);
-    } else if (selectedCats.length < 2) {
-        if (selectedCats.length === 1 && cattery[selectedCats[0]].gender === cattery[index].gender) {
-            alert("Pick one Male and one Female!"); return;
-        }
-        selectedCats.push(index);
+function renderPedigree(cat, depth) {
+    if (!cat || depth === 0) return `<div class="ped-node empty">Unknown</div>`;
+    return `
+        <div class="ped-node">
+            <strong>${cat.name}</strong><br><small>${cat.phenotype}</small>
+            <div class="ped-parents">
+                ${renderPedigree(cat.parents?.father, depth - 1)}
+                ${renderPedigree(cat.parents?.mother, depth - 1)}
+            </div>
+        </div>
+    `;
+}
+
+function getClasses(p, cat) {
+    let cls = [];
+    if (p.includes('tabby') || p.includes('torbie') || p.includes('tabico')) {
+        const ti = [cat.genotype.ti1, cat.genotype.ti2].filter(g => g === 'Ti').length;
+        cls.push(p.includes('ticked') ? (ti === 2 ? 'pattern-ticked-homo' : 'pattern-ticked-hetero') : (p.includes('mackerel') ? 'pattern-mackerel' : 'pattern-classic'));
     }
-    renderCattery();
+    if (p.includes('white') || p.includes('calico') || p.includes('tabico')) cls.push('white-spotting');
+    if (p.includes('smoke')) cls.push('inhibitor-smoke');
+    if (p.includes('silver')) cls.push('inhibitor-silver');
+    if (p.includes('point')) cls.push('colorpoint-logic');
+    if (p.includes('longhair')) cls.push('longhair-style');
+    return cls.join(' ');
 }
 
-function breedSelected() {
-    if (selectedCats.length === 2) {
-        cattery.push(breed(cattery[selectedCats[0]], cattery[selectedCats[1]]));
-        selectedCats = [];
-        renderCattery();
-    }
-}
+function updateName(e, index) { cattery[index].name = e.target.value; renderCattery(); }
 
 function renderCattery() {
-    const container = document.getElementById('cattery');
-    container.innerHTML = '';
-    const colorMap = {
-        'black': '#2a2e3d', 'blue': '#5d667a', 'chocolate': '#4a3737', 
-        'lilac': '#7a6e7a', 'cinnamon': '#6e4e37', 'fawn': '#968375',
-        'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff', 'albino': '#ffffff'
-    };
+    const grids = { males: document.getElementById('males-grid'), females: document.getElementById('females-grid') };
+    grids.males.innerHTML = ''; grids.females.innerHTML = '';
+    const colorMap = { 'black': '#2a2e3d', 'blue': '#5d667a', 'chocolate': '#4a3737', 'lilac': '#7a6e7a', 'cinnamon': '#6e4e37', 'fawn': '#968375', 'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff', 'albino': '#ffffff' };
 
     cattery.forEach((cat, index) => {
+        const targetGrid = cat.gender === 'Male' ? grids.males : grids.females;
         const div = document.createElement('div');
         const p = cat.phenotype.toLowerCase();
-        const tiCount = [cat.genotype.ti1, cat.genotype.ti2].filter(g => g === 'Ti').length;
+        let bg = p.includes('-') ? `linear-gradient(45deg, ${colorMap[p.split(' ')[0].split('-')[0]]} 50%, ${colorMap[p.split(' ')[0].split('-')[1]]} 50%)` : (Object.keys(colorMap).find(c => p.includes(c)) || '#2a2e3d');
         
-        let bgStyle = "";
-        if (p.includes('-')) {
-            const parts = p.split(' ')[0].split('-');
-            bgStyle = `linear-gradient(45deg, ${colorMap[parts[0]]} 50%, ${colorMap[parts[1]]} 50%)`;
-        } else {
-            const base = Object.keys(colorMap).find(c => p.includes(c)) || 'black';
-            bgStyle = colorMap[base];
-        }
-
-        div.className = `cat-card ${selectedCats.includes(index) ? 'selected' : ''}`;
-        
-        if (p.includes('tabby') || p.includes('torbie') || p.includes('tabico')) {
-            if (p.includes('ticked')) {
-                div.classList.add(tiCount === 2 ? 'pattern-ticked-homo' : 'pattern-ticked-hetero');
-            } else if (p.includes('mackerel')) {
-                div.classList.add('pattern-mackerel');
-            } else {
-                div.classList.add('pattern-classic');
-            }
-        }
-
-        if (p.includes('and white') || p.includes('calico') || p.includes('tabico')) div.classList.add('white-spotting');
-        if (p.includes('smoke')) div.classList.add('inhibitor-smoke');
-        if (p.includes('silver')) div.classList.add('inhibitor-silver');
-        if (p.includes('point')) div.classList.add('colorpoint-logic');
-        if (p.includes('longhair')) div.classList.add('longhair-style');
-
-        div.style.background = bgStyle;
-        div.onclick = () => selectCat(index);
-        
-        const oG = cat.gender === "Male" ? `${cat.genotype.o1}Y` : `${cat.genotype.o1}${cat.genotype.o2}`;
-        const dna = `
-            ${cat.genotype.b1}${cat.genotype.b2} ${cat.genotype.d1}${cat.genotype.d2} ${oG} 
-            ${cat.genotype.a1}${cat.genotype.a2} ${cat.genotype.ti1}${cat.genotype.ti2} ${cat.genotype.mc1}${cat.genotype.mc2} 
-            ${cat.genotype.w1}${cat.genotype.w2} ${cat.genotype.i1}${cat.genotype.i2} 
-            ${cat.genotype.c1}${cat.genotype.c2} ${cat.genotype.l1}${cat.genotype.l2}
-        `;
-
-        div.innerHTML = `
-            <div class="gender-tag">${cat.gender === "Male" ? '♂' : '♀'}</div>
-            <strong>${cat.phenotype}</strong>
-            <span class="genotype">${dna}</span>
-        `;
-        container.appendChild(div);
+        div.className = `cat-card ${selectedCats.includes(index) ? 'selected' : ''} ${getClasses(p, cat)}`;
+        div.style.background = bg;
+        div.onclick = () => {
+            if (selectedCats.includes(index)) selectedCats = selectedCats.filter(i => i !== index);
+            else if (selectedCats.length < 2) selectedCats.push(index);
+            renderCattery();
+        };
+        div.oncontextmenu = (e) => { e.preventDefault(); showFocus(cat); };
+        div.innerHTML = `<strong>${cat.name}</strong><small>${cat.phenotype}</small>`;
+        targetGrid.appendChild(div);
     });
 }

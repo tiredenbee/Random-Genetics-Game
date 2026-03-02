@@ -2,23 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat Geneticist</title>
+    <title>Cat Genetics Lab</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
-        <div class="header-row">
-            <h1>Cat Geneticist</h1>
-        </div>
-        
+        <nav id="main-nav">
+            <button onclick="switchTab('focus')">Focus View</button>
+            <button onclick="switchTab('males')">Males</button>
+            <button onclick="switchTab('females')">Females</button>
+        </nav>
+
         <div id="controls">
             <button onclick="generateRandomCat()">Rescue a Cat</button>
-            <button class="breed-btn" onclick="breedSelected()">Breed Selected Cats</button>
+            <button class="breed-btn" onclick="breedSelected()">Breed Selected</button>
         </div>
 
-        <div id="cattery" class="cat-grid">
+        <div id="focus-area" class="view-section">
+            <div id="active-cat-display">
+                <p>Rescue or Breed a cat to see them here!</p>
             </div>
+        </div>
+
+        <div id="males-area" class="view-section" style="display:none;">
+            <div class="cat-grid" id="males-grid"></div>
+        </div>
+        <div id="females-area" class="view-section" style="display:none;">
+            <div class="cat-grid" id="females-grid"></div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
