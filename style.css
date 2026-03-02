@@ -93,3 +93,44 @@ button:hover { transform: translateY(-3px); background-color: var(--secondary); 
     border-radius: 20px;
     font-family: monospace;
 }
+/* Color Classes remain the same, adding Pattern Overlays */
+
+.pattern-tabby {
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0) 10px,
+        rgba(0, 0, 0, 0.15) 10px,
+        rgba(0, 0, 0, 0.15) 20px
+    ) !important;
+}
+
+/* Base card styling update */
+.cat-card {
+    background: var(--card-bg);
+    border: 3px solid transparent;
+    border-radius: var(--border-radius);
+    padding: 35px 15px 25px 15px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    transition: 0.3s;
+    background-blend-mode: multiply; /* Allows pattern to sit nicely on color */
+}
+
+/* Ensure gender tag stays on top of patterns */
+.gender-tag {
+    z-index: 2;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.4);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+.color-blue-patched-tabby { background: linear-gradient(45deg, #5d667a 50%, #c29d70 50%) !important; }
+.color-blue-cream { background: linear-gradient(45deg, #5d667a 50%, #c29d70 50%) !important; }
