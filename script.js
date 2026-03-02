@@ -6,7 +6,7 @@ const GENES = {
     Mc: { mackerel: 'Mc', classic: 'mc' },
     W: { dominantWhite: 'WD', spotting: 'S', noWhite: 'w' },
     I: { inhibitor: 'I', nonInhibitor: 'i' },
-    C: { full: 'C', sepia: 'cb', siamese: 'cs', albino: 'c' } // Colorpoint Locus
+    C: { full: 'C', sepia: 'cb', siamese: 'cs', albino: 'c' }
 };
 
 let cattery = [];
@@ -22,20 +22,15 @@ class Cat {
     determinePhenotype() {
         const whiteAlleles = [this.genotype.w1, this.genotype.w2];
         const c = [this.genotype.c1, this.genotype.c2];
-        
-        // 1. Epistatic Masks (White Dominant or Albino)
         if (whiteAlleles.includes('WD')) return "White";
         if (c.every(al => al === 'c')) return "Albino";
 
-        // 2. Base Colors
         const b = [this.genotype.b1, this.genotype.b2];
         let base = b.includes('B') ? "Black" : (b.includes('b') ? "Chocolate" : "Cinnamon");
-
         const isDilute = !([this.genotype.d1, this.genotype.d2].includes('D'));
         const isInhibitor = [this.genotype.i1, this.genotype.i2].includes('I');
         const isAgouti = [this.genotype.a1, this.genotype.a2].includes('A');
 
-        // 3. Red/Orange Logic
         let isRed = false;
         let isTortie = false;
         if (this.gender === "Male") {
@@ -50,15 +45,13 @@ class Cat {
         let mainColor = isDilute ? diluteMap[base] : base;
         let redColor = isDilute ? "Cream" : "Red";
 
-        // 4. Colorpoint Logic
         let pointSuffix = "";
-        if (!c.includes('C')) { // If not full color
+        if (!c.includes('C')) {
             if (c.includes('cb') && c.includes('cs')) pointSuffix = " Mink Point";
             else if (c.includes('cb')) pointSuffix = " Sepia Point";
             else if (c.includes('cs')) pointSuffix = " Siamese Point";
         }
 
-        // 5. Pattern & Inhibitor
         let effect = "";
         if (isInhibitor) {
             effect = isAgouti || (isRed && !isTortie) ? "Silver " : "Smoke ";
@@ -79,7 +72,6 @@ class Cat {
 
         finalName += pointSuffix;
         if (whiteAlleles.includes('S')) finalName += " and White";
-
         return finalName;
     }
 }
@@ -91,22 +83,14 @@ function breed(p1, p2) {
     const gender = Math.random() > 0.5 ? "Male" : "Female";
     
     return new Cat({
-        b1: pick(mother.genotype.b1, mother.genotype.b2),
-        b2: pick(father.genotype.b1, father.genotype.b2),
-        d1: pick(mother.genotype.d1, mother.genotype.d2),
-        d2: pick(father.genotype.d1, father.genotype.d2),
-        o1: pick(mother.genotype.o1, mother.genotype.o2),
-        o2: gender === "Female" ? father.genotype.o1 : null,
-        a1: pick(mother.genotype.a1, mother.genotype.a2),
-        a2: pick(father.genotype.a1, father.genotype.a2),
-        mc1: pick(mother.genotype.mc1, mother.genotype.mc2),
-        mc2: pick(father.genotype.mc1, father.genotype.mc2),
-        w1: pick(mother.genotype.w1, mother.genotype.w2),
-        w2: pick(father.genotype.w1, father.genotype.w2),
-        i1: pick(mother.genotype.i1, mother.genotype.i2),
-        i2: pick(father.genotype.i1, father.genotype.i2),
-        c1: pick(mother.genotype.c1, mother.genotype.c2),
-        c2: pick(father.genotype.c1, father.genotype.c2)
+        b1: pick(mother.genotype.b1, mother.genotype.b2), b2: pick(father.genotype.b1, father.genotype.b2),
+        d1: pick(mother.genotype.d1, mother.genotype.d2), d2: pick(father.genotype.d1, father.genotype.d2),
+        o1: pick(mother.genotype.o1, mother.genotype.o2), o2: gender === "Female" ? father.genotype.o1 : null,
+        a1: pick(mother.genotype.a1, mother.genotype.a2), a2: pick(father.genotype.a1, father.genotype.a2),
+        mc1: pick(mother.genotype.mc1, mother.genotype.mc2), mc2: pick(father.genotype.mc1, father.genotype.mc2),
+        w1: pick(mother.genotype.w1, mother.genotype.w2), w2: pick(father.genotype.w1, father.genotype.w2),
+        i1: pick(mother.genotype.i1, mother.genotype.i2), i2: pick(father.genotype.i1, father.genotype.i2),
+        c1: pick(mother.genotype.c1, mother.genotype.c2), c2: pick(father.genotype.c1, father.genotype.c2)
     }, gender);
 }
 
