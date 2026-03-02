@@ -9,12 +9,16 @@
 <body>
     
     <div class="top-controls">
+        <div class="save-wrapper" style="display: flex; gap: 10px;">
+            <button class="corner-btn danger" onclick="resetGame()">RESET DATA</button>
+            <button class="corner-btn success" onclick="saveGame()">SAVE GAME</button>
+        </div>
         <div class="nav-group main-tabs">
             <button class="tab-btn active" onclick="switchTab('focus')">Focus View</button>
             <button class="tab-btn" onclick="switchTab('males')">Males</button>
             <button class="tab-btn" onclick="switchTab('females')">Females</button>
         </div>
-        <div class="save-wrapper" style="flex-direction: row; align-items: center; gap: 15px;">
+        <div class="action-group" style="display: flex; gap: 10px;">
             <button class="corner-btn success" onclick="generateRandomCat()">Rescue Cat</button>
             <button class="corner-btn luck" onclick="breedSelected()">Breed Selected</button>
         </div>
@@ -31,18 +35,20 @@
 
         <section id="males-area" class="tab-content">
             <div class="glass-card">
-                <h2 class="section-title" style="margin-top:0;">Male Cattery</h2>
+                <h2 class="section-title">Male Cattery</h2>
                 <div class="automation-grid" id="males-grid"></div>
             </div>
         </section>
 
         <section id="females-area" class="tab-content">
             <div class="glass-card">
-                <h2 class="section-title" style="margin-top:0;">Female Cattery</h2>
+                <h2 class="section-title">Female Cattery</h2>
                 <div class="automation-grid" id="females-grid"></div>
             </div>
         </section>
     </main>
+
+    <div id="notification-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
 
     <script src="script.js"></script>
 </body>
