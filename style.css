@@ -1,0 +1,133 @@
+/* Custom Properties for easy color swapping */
+:root {
+    --bg-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --primary: #6c5ce7;
+    --secondary: #a29bfe;
+    --accent: #ff7675;
+    --text-main: #2d3436;
+    --text-sub: #636e72;
+    --border-radius: 12px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#game-container {
+    max-width: 900px;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    color: var(--primary);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 30px;
+}
+
+#controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(108, 92, 231, 0.2);
+}
+
+button:hover {
+    background-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(108, 92, 231, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Secondary button style for breeding */
+button:nth-child(2) {
+    background-color: var(--accent);
+    box-shadow: 0 4px 6px rgba(255, 118, 117, 0.2);
+}
+
+button:nth-child(2):hover {
+    background-color: #ff8e8d;
+}
+
+.cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+}
+
+.cat-card {
+    background: var(--card-bg);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    position: relative;
+    cursor: pointer;
+}
+
+.cat-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.cat-card.selected {
+    border-color: var(--accent);
+    background-color: #fffafb;
+}
+
+.cat-card.selected::after {
+    content: "❤️";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2rem;
+}
+
+.cat-icon {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.cat-card strong {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    color: var(--text-main);
+}
+
+.genotype {
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    background: #f1f2f6;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
