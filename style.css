@@ -56,3 +56,71 @@ button { background: var(--primary); color: var(--bg-color); border: none; paddi
     padding: 8px; border-radius: 8px; font-family: monospace; color: #fff;
     line-height: 1.5; z-index: 2; position: relative;
 }
+/* Previous styles remain... */
+
+/* Homozygous Ticked (Ti Ti) - Single stripe down the middle */
+.pattern-ticked-homo::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 48%; width: 4%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Heterozygous Ticked (Ti ti) - Sparse, faint stripes */
+.pattern-ticked-hetero::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: repeating-linear-gradient(
+        45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 40px,
+        rgba(0, 0, 0, 0.1) 40px, rgba(0, 0, 0, 0.1) 45px
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Mackerel Tabby (Default) - Standard stripes */
+.pattern-mackerel::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: repeating-linear-gradient(
+        90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 15px,
+        rgba(0, 0, 0, 0.2) 15px, rgba(0, 0, 0, 0.2) 20px
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Classic Tabby (mc mc) - Wider, bolder stripes */
+.pattern-classic::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: repeating-linear-gradient(
+        -45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 30px,
+        rgba(0, 0, 0, 0.25) 30px, rgba(0, 0, 0, 0.25) 60px
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Longhair visual effect: Soft outer glow/fuzziness */
+.longhair-style {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    border-style: dashed; /* Subtle difference in border */
+}
+
+.longhair-style.selected {
+    border-style: solid;
+    box-shadow: 0 0 20px white;
+}
+
+/* Ensure DNA font scales down for the now 10-locus string */
+.genotype {
+    font-size: 0.5rem;
+    letter-spacing: 0.2px;
+}
