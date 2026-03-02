@@ -2,8 +2,9 @@ const GENES = {
     B: { dominant: 'B', medium: 'b', recessive: 'bl' },
     D: { dominant: 'D', recessive: 'd' },
     O: { red: 'O', nonRed: 'o' },
-    A: { agouti: 'A', nonAgouti: 'a' }, // The "Switch"
-    Mc: { mackerel: 'Mc', classic: 'mc' } // The "Pattern"
+    A: { agouti: 'A', nonAgouti: 'a' },
+    Mc: { mackerel: 'Mc', classic: 'mc' },
+    W: { dominantWhite: 'WD', spotting: 'S', noWhite: 'w' } // The White Locus
 };
 
 let cattery = [];
@@ -18,17 +19,21 @@ class Cat {
     }
 
     determinePhenotype() {
-        // 1. Base Color
+        // 1. Check for Dominant White (Epistasis)
+        const whiteAlleles = [this.genotype.w1, this.genotype.w2];
+        if (whiteAlleles.includes('WD')) return "White";
+
+        // 2. Base Color (B-Locus)
         let base = "Black";
         const b = [this.genotype.b1, this.genotype.b2];
         if (b.includes('B')) base = "Black";
         else if (b.includes('b')) base = "Chocolate";
         else base = "Cinnamon";
 
-        // 2. Dilution
+        // 3. Dilution (D-Locus)
         const isDilute = !([this.genotype.d1, this.genotype.d2].includes('D'));
         
-        // 3. Red/Orange Logic (Sex-Linked)
+        // 4. Red/Orange (O-Locus)
         let color = base;
         let isTortie = false;
         if (this.gender === "Male") {
@@ -39,23 +44,19 @@ class Cat {
             else if (o.includes('O') && o.includes('o')) isTortie = true;
         }
 
-        // 4. Agouti/Tabby Logic
+        // 5. Agouti/Tabby Logic
         const isAgouti = [this.genotype.a1, this.genotype.a2].includes('A');
         const isMackerel = [this.genotype.mc1, this.genotype.mc2].includes('Mc');
         const patternName = isMackerel ? "Mackerel Tabby" : "Classic Tabby";
 
-        // Phenotype String Construction
         let finalName = color;
-        
-        // Red cats always show some tabby, but we only label them "Tabby" if genetically Agouti
-        // Solid (non-agouti) cats only show pattern if they are NOT solid black/blue/etc.
         if (isTortie) {
             finalName = isAgouti ? `${color} Torbie` : `${color} Tortie`;
         } else if (isAgouti || color === "Red") {
             finalName = `${color} ${patternName}`;
         }
 
-        // Dilution Mapping
+        // 6. Dilution Mapping
         const diluteMap = {
             "Black": "Blue", "Chocolate": "Lilac", "Cinnamon": "Fawn",
             "Red": "Cream", "Tortie": "Blue-Cream", "Torbie": "Blue-Patched Tabby"
@@ -68,6 +69,11 @@ class Cat {
                     break;
                 }
             }
+        }
+
+        // 7. White Spotting (S)
+        if (whiteAlleles.includes('S')) {
+            finalName += " and White";
         }
 
         return finalName;
@@ -91,7 +97,9 @@ function breed(p1, p2) {
         a1: pick(mother.genotype.a1, mother.genotype.a2),
         a2: pick(father.genotype.a1, father.genotype.a2),
         mc1: pick(mother.genotype.mc1, mother.genotype.mc2),
-        mc2: pick(father.genotype.mc1, father.genotype.mc2)
+        mc2: pick(father.genotype.mc1, father.genotype.mc2),
+        w1: pick(mother.genotype.w1, mother.genotype.w2),
+        w2: pick(father.genotype.w1, father.genotype.w2)
     };
     return new Cat(g, gender, "Kitten");
 }
@@ -99,13 +107,15 @@ function breed(p1, p2) {
 function generateRandomCat() {
     const gender = Math.random() > 0.5 ? "Male" : "Female";
     const r = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const whiteAlleles = ['WD', 'S', 'w', 'w', 'w']; // Weighting 'w' higher so not every cat is white
     
     const g = {
         b1: r(['B', 'b', 'bl']), b2: r(['B', 'b', 'bl']),
         d1: r(['D', 'd']), d2: r(['D', 'd']),
         o1: r(['O', 'o']), o2: gender === "Female" ? r(['O', 'o']) : null,
         a1: r(['A', 'a']), a2: r(['A', 'a']),
-        mc1: r(['Mc', 'mc']), mc2: r(['Mc', 'mc'])
+        mc1: r(['Mc', 'mc']), mc2: r(['Mc', 'mc']),
+        w1: r(whiteAlleles), w2: r(whiteAlleles)
     };
     
     cattery.push(new Cat(g, gender, "Rescue"));
@@ -118,15 +128,15 @@ function renderCattery() {
     
     cattery.forEach((cat, index) => {
         const div = document.createElement('div');
-        // Simplify class name for CSS (remove 'tabby' specific words for base color)
-        const baseColorClass = cat.phenotype.split(' ')[0].toLowerCase();
-        const patternClass = cat.phenotype.toLowerCase().includes('tabby') || cat.phenotype.toLowerCase().includes('torbie') ? 'pattern-tabby' : '';
+        const colorClass = `color-${cat.phenotype.split(' ')[0].toLowerCase()}`;
+        const patternClass = (cat.phenotype.includes('Tabby') || cat.phenotype.includes('Torbie')) ? 'pattern-tabby' : '';
+        const spottingClass = cat.phenotype.includes('and White') ? 'white-spotting' : '';
         const isSelected = selectedCats.includes(index) ? 'selected' : '';
         
-        div.className = `cat-card color-${baseColorClass} ${patternClass} ${isSelected}`;
+        div.className = `cat-card ${colorClass} ${patternClass} ${spottingClass} ${isSelected}`;
         div.onclick = () => selectCat(index);
         
-        const dna = `${cat.genotype.b1}${cat.genotype.b2} ${cat.genotype.d1}${cat.genotype.d2} ${cat.genotype.a1}${cat.genotype.a2}`;
+        const dna = `${cat.genotype.b1}${cat.genotype.b2} ${cat.genotype.a1}${cat.genotype.a2} ${cat.genotype.w1}${cat.genotype.w2}`;
         
         div.innerHTML = `
             <div class="gender-tag">${cat.gender === "Male" ? '♂' : '♀'}</div>
@@ -136,5 +146,3 @@ function renderCattery() {
         container.appendChild(div);
     });
 }
-
-// selectCat and breedSelected remain the same as previous version.
