@@ -6,6 +6,7 @@ const GENES = {
 
 let cattery = [];
 let selectedCats = [];
+const colorMap = { 'black': '#2a2e3d', 'blue': '#5d667a', 'chocolate': '#4a3737', 'lilac': '#7a6e7a', 'cinnamon': '#6e4e37', 'fawn': '#968375', 'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff', 'albino': '#ffffff' };
 
 class Cat {
     constructor(genotype, gender, parents = null) {
@@ -69,9 +70,11 @@ class Cat {
 function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    
     document.getElementById(`${tabId}-area`).classList.add('active');
-    event.currentTarget.classList.add('active');
+    
+    // Set active class on button
+    const btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(btn => { if(btn.innerText.toLowerCase().includes(tabId.substring(0,3))) btn.classList.add('active'); });
     renderCattery();
 }
 
@@ -118,23 +121,31 @@ function breedSelected() {
     showFocus(kitten);
 }
 
+function getCatBackground(phenotype) {
+    const p = phenotype.toLowerCase();
+    if (p.includes('-')) {
+        const parts = p.split(' ')[0].split('-');
+        return `linear-gradient(45deg, ${colorMap[parts[0]] || '#2a2e3d'} 50%, ${colorMap[parts[1]] || '#2a2e3d'} 50%)`;
+    }
+    const colorKey = Object.keys(colorMap).find(c => p.includes(c));
+    return colorMap[colorKey] || '#2a2e3d';
+}
+
 function showFocus(cat) {
     const container = document.getElementById('active-cat-display');
-    const colorMap = { 'black': '#2a2e3d', 'blue': '#5d667a', 'chocolate': '#4a3737', 'lilac': '#7a6e7a', 'cinnamon': '#6e4e37', 'fawn': '#968375', 'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff', 'albino': '#ffffff' };
-    
     const p = cat.phenotype.toLowerCase();
-    let bg = p.includes('-') ? `linear-gradient(45deg, ${colorMap[p.split(' ')[0].split('-')[0]]} 50%, ${colorMap[p.split(' ')[0].split('-')[1]]} 50%)` : (Object.keys(colorMap).find(c => p.includes(c)) || '#2a2e3d');
-
+    const bg = getCatBackground(cat.phenotype);
     const catIndex = cattery.indexOf(cat);
 
     container.innerHTML = `
         <div class="focus-card ${getClasses(p, cat)}" style="background: ${bg}">
+            <div class="gender-tag">${cat.gender === "Male" ? '♂' : '♀'}</div>
             <input type="text" value="${cat.name}" onchange="updateName(event, ${catIndex})" class="name-input">
-            <h2 style="color: white; text-shadow: 0 2px 10px black;">${cat.phenotype}</h2>
+            <h2 style="color: white; text-shadow: 0 2px 10px black; position: relative; z-index: 5;">${cat.phenotype}</h2>
             <p class="genotype-large">${Object.values(cat.genotype).join(' ')}</p>
         </div>
         <div class="pedigree-box">
-            <h3 style="color: var(--accent-color)">Great-Grandparent Pedigree</h3>
+            <h3 style="color: var(--accent-color); text-align: center; margin-top:0;">Family Pedigree</h3>
             <div class="pedigree-tree">${renderPedigree(cat, 3)}</div>
         </div>
     `;
@@ -145,6 +156,7 @@ function renderPedigree(cat, depth) {
     if (!cat || depth === 0) return `<div class="ped-node empty">Unknown</div>`;
     return `
         <div class="ped-node">
+            <div class="gender-tag mini">${cat.gender === "Male" ? '♂' : '♀'}</div>
             <strong>${cat.name}</strong><br><small>${cat.phenotype}</small>
             <div class="ped-parents">
                 ${renderPedigree(cat.parents?.father, depth - 1)}
@@ -171,6 +183,7 @@ function getClasses(p, cat) {
 function updateName(e, index) { 
     if (index !== -1) {
         cattery[index].name = e.target.value; 
+        renderCattery();
     }
 }
 
@@ -180,17 +193,14 @@ function renderCattery() {
     if (!mGrid || !fGrid) return;
 
     mGrid.innerHTML = ''; fGrid.innerHTML = '';
-    const colorMap = { 'black': '#2a2e3d', 'blue': '#5d667a', 'chocolate': '#4a3737', 'lilac': '#7a6e7a', 'cinnamon': '#6e4e37', 'fawn': '#968375', 'red': '#a34e2e', 'cream': '#c29d70', 'white': '#ffffff', 'albino': '#ffffff' };
 
     cattery.forEach((cat, index) => {
         const targetGrid = cat.gender === 'Male' ? mGrid : fGrid;
         const div = document.createElement('div');
         const p = cat.phenotype.toLowerCase();
-        let bg = p.includes('-') ? `linear-gradient(45deg, ${colorMap[p.split(' ')[0].split('-')[0]]} 50%, ${colorMap[p.split(' ')[0].split('-')[1]]} 50%)` : (Object.keys(colorMap).find(c => p.includes(c)) || '#2a2e3d');
         
-        div.className = `upgrade-item ${selectedCats.includes(index) ? 'active-selection' : ''} ${getClasses(p, cat)}`;
-        div.style.background = bg;
-        div.style.border = selectedCats.includes(index) ? "2px solid white" : "1px solid var(--border-color)";
+        div.className = `cat-item ${selectedCats.includes(index) ? 'active-selection' : ''} ${getClasses(p, cat)}`;
+        div.style.background = getCatBackground(cat.phenotype);
         
         div.onclick = () => {
             if (selectedCats.includes(index)) selectedCats = selectedCats.filter(i => i !== index);
@@ -198,7 +208,10 @@ function renderCattery() {
             renderCattery();
         };
         div.oncontextmenu = (e) => { e.preventDefault(); showFocus(cat); };
-        div.innerHTML = `<div style="z-index:2"><strong>${cat.name}</strong><br><small>${cat.phenotype}</small></div>`;
+        div.innerHTML = `
+            <div class="gender-tag mini">${cat.gender === "Male" ? '♂' : '♀'}</div>
+            <div style="z-index:2"><strong>${cat.name}</strong><br><small>${cat.phenotype}</small></div>
+        `;
         targetGrid.appendChild(div);
     });
 }

@@ -2,56 +2,48 @@
     --bg-color: #0f0f0f;
     --card-bg: #1a1a1a;
     --accent-color: #4db6ac;
-    --luck-color: #ffd700;
-    --danger-color: #ff5252;
     --text-main: #e0e0e0;
     --text-dim: #888;
     --border-color: #333;
     --silver-wash: rgba(220, 220, 235, 0.7);
 }
 
-body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 80px; }
 
-/* Tabs Navigation */
-.tabs { display: flex; justify-content: center; align-items: center; gap: 50px; padding: 20px; background: var(--card-bg); border-bottom: 2px solid var(--border-color); position: sticky; top:0; z-index:100; }
-.nav-group { display: flex; gap: 15px; }
-.tab-btn { padding: 10px 25px; background: #2a2a2a; border: 1px solid var(--border-color); color: var(--text-dim); border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+/* Navigation & Controls */
+.top-controls { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; box-sizing: border-box; background: var(--card-bg); border-bottom: 2px solid var(--border-color); z-index: 100; }
+.tab-btn { padding: 10px 20px; background: #2a2a2a; border: 1px solid var(--border-color); color: var(--text-dim); border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
 .tab-btn.active { color: var(--accent-color); border-color: var(--accent-color); background: #1e2e2c; }
-
-/* Views */
-.tab-content { display: none; padding: 20px; }
-.tab-content.active { display: block; }
-.game-container { max-width: 1400px; margin: 0 auto; }
-
-/* Focus Card Styles */
-.focus-card { width: 500px; padding: 60px 40px; border-radius: 24px; position: relative; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; margin: 0 auto; margin-bottom: 20px; }
-.name-input { background: rgba(0,0,0,0.6); border: 2px solid transparent; color: white; font-size: 2.2rem; font-weight: bold; text-align: center; width: 100%; border-radius: 12px; margin-bottom: 10px; cursor: text; position: relative; z-index: 5; }
-.name-input:focus { border-color: var(--accent-color); outline: none; }
-
-.pedigree-box { background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); margin-top: 20px; }
-.pedigree-tree { display: flex; justify-content: center; gap: 15px; font-size: 0.75rem; overflow-x: auto; padding: 10px; }
-.ped-node { border: 1px solid var(--border-color); padding: 10px; border-radius: 10px; min-width: 140px; background: rgba(255,255,255,0.03); }
-.ped-parents { display: flex; gap: 10px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px; }
-
-/* Grid / Inventory Items */
-.automation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-.upgrade-item { background: #252525; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; position: relative; overflow: hidden; height: 80px; transition: 0.2s; }
-.upgrade-item:hover { transform: scale(1.02); }
-
-/* Corner Buttons */
-.corner-btn { padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
-.danger { background: var(--danger-color); color: white; }
+.corner-btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
 .success { background: var(--accent-color); color: black; }
 
-/* Inherited Cat Visuals */
+/* Dashboard Cards */
+.game-container { padding: 20px; max-width: 1400px; margin: 0 auto; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.glass-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.full-width-card { width: 100%; max-width: 700px; }
+
+/* Cat Visuals & Input */
+.focus-card { width: 100%; height: 200px; border-radius: 20px; position: relative; text-align: center; overflow: hidden; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border-color); }
+.name-input { background: rgba(0,0,0,0.5); border: 1px dashed var(--text-dim); color: white; font-size: 2rem; font-weight: bold; text-align: center; width: 80%; border-radius: 8px; z-index: 10; padding: 5px; }
+.name-input:focus { border-color: var(--accent-color); outline: none; }
+
+/* Tags & Pedigree */
+.gender-tag { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 8px; font-weight: bold; z-index: 10; font-size: 1.2rem; }
+.gender-tag.mini { font-size: 0.8rem; top: 8px; left: 8px; padding: 2px 6px; }
+
+.pedigree-tree { display: flex; justify-content: center; gap: 10px; font-size: 0.7rem; overflow-x: auto; }
+.ped-node { border: 1px solid var(--border-color); padding: 10px; border-radius: 10px; min-width: 130px; background: rgba(255,255,255,0.03); position: relative; }
+.ped-parents { display: flex; gap: 8px; margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 8px; }
+
+/* Grid Items */
+.automation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
+.cat-item { padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; position: relative; overflow: hidden; height: 100px; transition: 0.2s; text-shadow: 0 1px 4px black; }
+.active-selection { outline: 3px solid white; box-shadow: 0 0 15px rgba(255,255,255,0.4); z-index: 5; }
+
+/* Pattern Overlays (Same as before) */
 .inhibitor-smoke::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--silver-wash) 0%, transparent 50%); z-index: 0; }
 .inhibitor-silver::before { content: ""; position: absolute; inset: 0; background: var(--silver-wash); z-index: 0; }
-.colorpoint-logic { background-image: radial-gradient(circle, transparent 20%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.7) 100%) !important; background-blend-mode: soft-light !important; }
-.pattern-classic::after, .pattern-mackerel::after, .pattern-ticked-hetero::after, .pattern-ticked-homo::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.pattern-classic::after { background-image: repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(0,0,0,0.3) 30px, rgba(0,0,0,0.5) 60px); }
-.pattern-mackerel::after { background-image: repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,0,0,0.2) 15px, rgba(0,0,0,0.2) 20px); }
-.pattern-ticked-hetero::after { background-image: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(0,0,0,0.15) 40px, rgba(0,0,0,0.15) 45px); }
-.pattern-ticked-homo::after { background: linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.6) 48%, rgba(0,0,0,0.6) 52%, transparent 52%); }
-.white-spotting { box-shadow: inset 0 -25px 0 0 #ffffff !important; }
-.longhair-style { border-style: dashed; }
-.genotype-large { font-family: monospace; font-size: 0.9rem; background: rgba(0,0,0,0.7); padding: 12px; border-radius: 12px; margin-top: 20px; color: var(--accent-color); }
+.pattern-classic::after { background-image: repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(0,0,0,0.3) 30px, rgba(0,0,0,0.5) 60px); content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.white-spotting { box-shadow: inset 0 -30px 0 0 #ffffff !important; }
