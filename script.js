@@ -1,7 +1,7 @@
 // Genetic Constants
 const GENES = {
-    B: { dominant: 'B', medium: 'b', recessive: 'bl', name: 'Black/Chocolate/Cinnamon' },
-    D: { dominant: 'D', recessive: 'd', name: 'Dilute' }
+    B: { dominant: 'B', medium: 'b', recessive: 'bl' },
+    D: { dominant: 'D', recessive: 'd' }
 };
 
 let cattery = [];
@@ -9,20 +9,19 @@ let selectedCats = [];
 
 class Cat {
     constructor(genotype, name) {
-        this.genotype = genotype; // Example: { b1: 'B', b2: 'bl', d1: 'D', d2: 'd' }
+        this.genotype = genotype;
         this.name = name;
         this.phenotype = this.determinePhenotype();
     }
 
     determinePhenotype() {
-        // Logic for B-Locus (B > b > bl)
         let color = "Black";
         const bAlleles = [this.genotype.b1, this.genotype.b2];
+        
         if (bAlleles.includes('B')) color = "Black";
         else if (bAlleles.includes('b')) color = "Chocolate";
         else color = "Cinnamon";
 
-        // Logic for D-Locus (D > d)
         const dAlleles = [this.genotype.d1, this.genotype.d2];
         const isDilute = !dAlleles.includes('D');
 
@@ -36,6 +35,7 @@ class Cat {
     }
 }
 
+// Core Gameplay Logic
 function breed(parent1, parent2) {
     const pick = (a, b) => Math.random() > 0.5 ? a : b;
     
@@ -47,23 +47,6 @@ function breed(parent1, parent2) {
     };
     
     return new Cat(childGenotype, "Kitten");
-}
-
-// UI Functions
-function renderCattery() {
-    const container = document.getElementById('cattery');
-    container.innerHTML = '';
-    cattery.forEach((cat, index) => {
-        const div = document.createElement('div');
-        div.className = `cat-card ${selectedCats.includes(index) ? 'selected' : ''}`;
-        div.onclick = () => selectCat(index);
-        div.innerHTML = `
-            <div class="cat-icon">🐈</div>
-            <strong>${cat.phenotype}</strong><br>
-            <span class="genotype">${cat.genotype.b1}${cat.genotype.b2} ${cat.genotype.d1}${cat.genotype.d2}</span>
-        `;
-        container.appendChild(div);
-    });
 }
 
 function generateRandomCat() {
@@ -79,6 +62,18 @@ function generateRandomCat() {
     renderCattery();
 }
 
+function breedSelected() {
+    if (selectedCats.length === 2) {
+        const kitten = breed(cattery[selectedCats[0]], cattery[selectedCats[1]]);
+        cattery.push(kitten);
+        selectedCats = [];
+        renderCattery();
+    } else {
+        alert("Select two cats to breed!");
+    }
+}
+
+// UI Rendering
 function selectCat(index) {
     if (selectedCats.includes(index)) {
         selectedCats = selectedCats.filter(i => i !== index);
@@ -88,13 +83,41 @@ function selectCat(index) {
     renderCattery();
 }
 
-function breedSelected() {
-    if (selectedCats.length === 2) {
-        const kitten = breed(cattery[selectedCats[0]], cattery[selectedCats[1]]);
-        cattery.push(kitten);
-        selectedCats = [];
-        renderCattery();
+function renderCattery() {
+    const container = document.getElementById('cattery');
+    container.innerHTML = '';
+    cattery.forEach((cat, index) => {
+        const div = document.createElement('div');
+        div.className = `cat-card ${selectedCats.includes(index) ? 'selected' : ''}`;
+        div.onclick = () => selectCat(index);
+        div.innerHTML = `
+            <span class="cat-icon">🐈</span>
+            <strong>${cat.phenotype}</strong>
+            <span class="genotype">${cat.genotype.b1}${cat.genotype.b2} ${cat.genotype.d1}${cat.genotype.d2}</span>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// Theme Management
+function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('theme-toggle');
+    body.classList.toggle('dark-mode');
+    
+    if (body.classList.contains('dark-mode')) {
+        btn.innerText = "☀️";
+        localStorage.setItem('theme', 'dark');
     } else {
-        alert("Select exactly 2 cats to breed!");
+        btn.innerText = "🌙";
+        localStorage.setItem('theme', 'light');
     }
 }
+
+// Load saved theme on startup
+window.onload = () => {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('theme-toggle').innerText = "☀️";
+    }
+};

@@ -8,11 +8,16 @@
 </head>
 <body>
     <div id="game-container">
-        <h1>Cat Geneticist</h1>
+        <div class="header-row">
+            <h1>Cat Geneticist</h1>
+            <button id="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+        
         <div id="controls">
             <button onclick="generateRandomCat()">Rescue a Cat</button>
-            <button onclick="breedSelected()">Breed Selected Cats</button>
+            <button class="breed-btn" onclick="breedSelected()">Breed Selected Cats</button>
         </div>
+
         <div id="cattery" class="cat-grid">
             </div>
     </div>
