@@ -3,113 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Runic Incremental</title>
+    <title>Cat Genetics Lab</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
     <div class="top-controls">
-        <button id="reset-btn" class="corner-btn danger">RESET GAME</button>
-        <div class="save-wrapper">
-            <button id="manual-save-btn" class="corner-btn success">SAVE GAME</button>
-            <div id="notification-container"></div>
+        <div class="nav-group main-tabs">
+            <button class="tab-btn active" onclick="switchTab('focus')">Focus View</button>
+            <button class="tab-btn" onclick="switchTab('males')">Males</button>
+            <button class="tab-btn" onclick="switchTab('females')">Females</button>
+        </div>
+        <div class="save-wrapper" style="flex-direction: row; align-items: center; gap: 15px;">
+            <button class="corner-btn success" onclick="generateRandomCat()">Rescue Cat</button>
+            <button class="corner-btn luck" onclick="breedSelected()">Breed Selected</button>
         </div>
     </div>
 
-    <nav class="tabs">
-        <div class="nav-group main-tabs">
-            <button class="tab-btn active" data-tab="earth-tab">Earth</button>
-            <button id="water-tab-btn" class="tab-btn locked" data-tab="water-tab">Water</button>
-        </div>
-        <div class="nav-group utility-tabs">
-            <button id="auto-tab-btn" class="tab-btn hidden" data-tab="automation-tab">Automation</button>
-        </div>
-    </nav>
-
     <main class="game-container">
-        <section id="earth-tab" class="tab-content active">
-            <div class="layout-wrapper">
-                <section class="panel left-panel">
-                    <div class="glass-card stat-card">
-                        <p class="label">Total Earth</p>
-                        <h1 id="earth-display">0</h1>
-                        <p id="earth-mult-display" class="stat-subtext">Multiplier: 1.00x</p>
-                        <button id="dig-btn" class="action-btn main-btn">Dig for Earth</button>
-                    </div>
-                    <div class="glass-card upgrade-window">
-                        <h2 class="section-title">Earth Upgrades</h2>
-                        <div id="upgrade-list"></div>
-                    </div>
-                </section>
-
-                <section class="panel right-panel">
-                    <div class="glass-card roller-card">
-                        <h2 class="section-title">Earth Rune</h2>
-                        <p id="luck-stat-display" class="luck-text">Luck: 1.00x</p>
-                        <button id="roll-btn" class="action-btn roll-btn">ROLL (50 Earth)</button>
-                        <div id="roll-result-container"><span id="last-roll-text">Waiting...</span></div>
-                    </div>
-                    <div class="glass-card collection-window">
-                        <h2 class="section-title">Earth Collection</h2>
-                        <div id="rune-list"></div>
-                    </div>
-                </section>
+        <section id="focus-area" class="tab-content active">
+            <div class="layout-wrapper" style="flex-direction: column; align-items: center;">
+                <div id="active-cat-display" class="glass-card full-width-card">
+                    <p style="text-align: center; color: var(--text-dim); padding: 40px;">Rescue or Breed a cat to see them here!</p>
+                </div>
             </div>
         </section>
 
-        <section id="water-tab" class="tab-content">
-            <div class="layout-wrapper">
-                <section class="panel left-panel">
-                    <div class="glass-card stat-card" style="border-color: #4fc3f7;">
-                        <p class="label">Total Water</p>
-                        <h1 id="water-display" style="color: #4fc3f7;">0</h1>
-                        <p id="water-mult-display" class="stat-subtext">Multiplier: 1.00x</p>
-                        <button id="gather-water-btn" class="action-btn" style="background: #0288d1; color: white;">Gather Water</button>
-                    </div>
-                    <div class="glass-card upgrade-window">
-                        <h2 class="section-title" style="color: #4fc3f7;">Water Upgrades</h2>
-                        <div id="water-upgrade-list"></div>
-                    </div>
-                </section>
-
-                <section class="panel right-panel">
-                    <div class="glass-card roller-card">
-                        <h2 class="section-title">Water Rune</h2>
-                        <p id="water-luck-display" class="luck-text">Luck: 1.00x</p>
-                        <button id="water-roll-btn" class="action-btn" style="background: #01579b; color: white;">CONJURE (50 Water)</button>
-                        <div id="water-roll-result-container"><span id="water-roll-text">Waiting...</span></div>
-                    </div>
-                    <div class="glass-card collection-window">
-                        <h2 class="section-title">Water Collection</h2>
-                        <div id="water-rune-list"></div>
-                    </div>
-                </section>
+        <section id="males-area" class="tab-content">
+            <div class="glass-card">
+                <h2 class="section-title" style="margin-top:0;">Male Cattery</h2>
+                <div class="automation-grid" id="males-grid"></div>
             </div>
         </section>
 
-        <section id="automation-tab" class="tab-content">
-            <div class="glass-card full-width">
-                <h2 class="section-title">Automation Hub</h2>
-                <div id="automation-categories">
-                    </div>
+        <section id="females-area" class="tab-content">
+            <div class="glass-card">
+                <h2 class="section-title" style="margin-top:0;">Female Cattery</h2>
+                <div class="automation-grid" id="females-grid"></div>
             </div>
         </section>
     </main>
 
     <script src="script.js"></script>
-	
-		<div class="glass-card roller-card">
-		<h2 class="section-title">Earth Rune</h2>
-		<p id="luck-stat-display" class="luck-text">Luck: 1.00x</p>
-		<p id="bulk-stat-display" class="bulk-text">Bulk: 1</p> <button id="roll-btn" class="action-btn roll-btn">ROLL (50 Earth)</button>
-		<div id="roll-result-container"><span id="last-roll-text">Waiting...</span></div>
-	</div>
-
-	<div class="glass-card roller-card">
-		<h2 class="section-title">Water Rune</h2>
-		<p id="water-luck-display" class="luck-text">Luck: 1.00x</p>
-		<p id="water-bulk-display" class="bulk-text">Bulk: 1</p> <button id="water-roll-btn" class="action-btn" style="background: #01579b; color: white;">CONJURE (50 Water)</button>
-		<div id="water-roll-result-container"><span id="water-roll-text">Waiting...</span></div>
-	</div>
 </body>
 </html>

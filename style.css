@@ -7,73 +7,54 @@
     --text-main: #e0e0e0;
     --text-dim: #888;
     --border-color: #333;
+    --silver-wash: rgba(220, 220, 235, 0.7);
 }
 
-body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; padding-top: 80px; }
 .tab-content { display: none; width: 100%; }
 .tab-content.active { display: block; }
 .layout-wrapper { display: flex; gap: 30px; justify-content: center; padding: 20px; }
 
-.tabs { display: flex; justify-content: center; align-items: center; gap: 50px; padding: 20px; background: var(--card-bg); border-bottom: 2px solid var(--border-color); }
+/* Top Controls & Navigation */
+.top-controls { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; box-sizing: border-box; background: var(--card-bg); border-bottom: 2px solid var(--border-color); z-index: 100; }
 .nav-group { display: flex; gap: 15px; }
-.tab-btn { padding: 10px 25px; background: #2a2a2a; border: 1px solid var(--border-color); color: var(--text-dim); border-radius: 8px; cursor: pointer; font-weight: bold; }
+.tab-btn { padding: 10px 25px; background: #2a2a2a; border: 1px solid var(--border-color); color: var(--text-dim); border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+.tab-btn:hover { border-color: var(--text-dim); }
 .tab-btn.active { color: var(--accent-color); border-color: var(--accent-color); background: #1e2e2c; }
-.tab-btn.hidden { display: none; }
-.tab-btn.locked { opacity: 0.4; cursor: not-allowed; }
 
-/* Top Controls & Save Text */
-.top-controls { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 15px; box-sizing: border-box; pointer-events: none; z-index: 100; }
-.corner-btn { pointer-events: auto; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; }
-.danger { background: var(--danger-color); color: white; }
+.corner-btn { padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
+.corner-btn:hover { transform: translateY(-2px); }
 .success { background: var(--accent-color); color: black; }
+.luck { background: var(--luck-color); color: black; }
 
-.save-wrapper { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
-#notification-container { pointer-events: none; color: var(--accent-color); font-weight: bold; font-size: 0.9rem; height: 20px; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
-
-/* Game Cards */
+/* Container & Cards */
 .game-container { padding: 30px; max-width: 1400px; margin: 0 auto; }
-.panel { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-.glass-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; }
+.glass-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.full-width-card { width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; }
+.section-title { color: var(--accent-color); font-size: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
 
-#earth-display { font-size: 3.5rem; margin: 10px 0; }
-.stat-subtext { color: var(--accent-color); font-size: 1.1rem; }
-.luck-text { color: var(--luck-color); font-weight: bold; margin-bottom: 10px; }
+/* Focus View Specifics */
+.focus-cat-visual { width: 100%; height: 200px; border-radius: 16px; position: relative; overflow: hidden; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--border-color); }
+.name-input { background: transparent; border: none; border-bottom: 2px dashed var(--text-dim); color: white; font-size: 2.5rem; font-weight: bold; text-align: center; width: 80%; padding: 10px; margin-bottom: 5px; transition: 0.2s; }
+.name-input:focus { outline: none; border-color: var(--accent-color); background: rgba(0,0,0,0.2); }
+.focus-phenotype { font-size: 1.2rem; color: var(--text-dim); margin-bottom: 20px; }
+.genotype-large { font-family: monospace; font-size: 0.9rem; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; color: var(--accent-color); letter-spacing: 1px; }
 
-.action-btn { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: bold; border-radius: 12px; cursor: pointer; border: none; margin-top: 10px; }
-.main-btn { background: var(--accent-color); color: black; }
-.roll-btn { background: #5d4037; color: white; }
+/* Pedigree Tree */
+.pedigree-box { width: 100%; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+.pedigree-tree { display: flex; justify-content: center; gap: 15px; font-size: 0.75rem; overflow-x: auto; padding-bottom: 10px; }
+.ped-node { border: 1px solid var(--border-color); padding: 10px; border-radius: 10px; min-width: 140px; background: rgba(0,0,0,0.3); text-align: center; }
+.ped-parents { display: flex; gap: 10px; margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 10px; }
 
-.upgrade-window, .collection-window { height: 450px; overflow-y: auto; margin-top: 15px; }
-.upgrade-item, .rune-item { background: #252525; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; }
-.upgrade-item:hover { border-color: var(--accent-color); cursor: pointer; }
-.upgrade-item.maxed { opacity: 0.5; cursor: default; border-color: transparent; }
+/* Grid / Inventory Items */
+.automation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+.cat-card { border-radius: 12px; border: 2px solid var(--border-color); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; position: relative; overflow: hidden; min-height: 120px; transition: 0.2s; padding: 15px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+.cat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+.cat-card.selected { border-color: white; box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+.cat-card strong { font-size: 1.1rem; color: white; z-index: 2; }
+.cat-card small { font-size: 0.8rem; color: #ddd; z-index: 2; margin-top: 5px; }
 
-.undiscovered { filter: grayscale(1) brightness(0.4); }
-.rune-buffs { text-align: right; color: var(--accent-color); font-size: 0.8rem; line-height: 1.4; }
-.upgrade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-.save-popup { animation: fadeOut 2s forwards; }
-@keyframes fadeOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
-
-.auto-category {
-    margin-bottom: 30px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.category-header {
-    font-size: 1.4rem;
-    color: var(--accent-color);
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.automation-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
-}
-
-#notification-container { min-height: 20px; }
-
+/* Cat Genetics Visual Layers */
+.inhibitor-smoke::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--silver-wash) 0%, transparent 60%); z-index: 0; pointer-events: none; }
+.inhibitor-silver::before { content: ""; position: absolute; inset: 0; background: var(--silver-wash); z-index: 0; pointer-events: none; }
+.colorpoint-logic { background-image: radial-gradient(circle, transparent 10%, rgba(255,255,255,0.5) 60%, rgba(255,255,255,0.85) 100%) !important; background-blend
