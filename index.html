@@ -2,63 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cat Genetics Lab | Research Dashboard</title>
+    <title>Cat Genetics Lab | Pedigree Research</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="tabs">
         <div class="nav-group">
             <button class="tab-btn active" onclick="switchTab('focus')">Focus View</button>
-            <button class="tab-btn" onclick="switchTab('males')">Male Cattery</button>
-            <button class="tab-btn" onclick="switchTab('females')">Female Cattery</button>
-            <button class="tab-btn" onclick="switchTab('pedigree')">Full Pedigree</button>
+            <button class="tab-btn" onclick="switchTab('males')">Males</button>
+            <button class="tab-btn" onclick="switchTab('females')">Females</button>
+            <button class="tab-btn" onclick="switchTab('breeding')">Breeding Workspace</button>
+            <button class="tab-btn" onclick="switchTab('pedigree')">Global Tree</button>
+        </div>
+        <div class="save-controls">
+            <button class="action-btn delete-btn" onclick="clearData()">Clear All Data</button>
         </div>
     </nav>
 
     <div class="game-container">
-        <div class="centered-header">
-            <button class="action-btn success-btn" onclick="generateRandomCat()">Rescue Cat</button>
-            <button class="action-btn breed-btn" onclick="breedSelected()">Breed Selected</button>
+        <div id="controls" class="centered-header">
+            <button class="action-btn success-btn" onclick="generateRandomCat()">Rescue a Cat</button>
         </div>
 
-        <section id="focus-tab" class="tab-content active">
-            <div class="workspace-grid">
-                <div class="focus-panel">
-                    <div id="active-cat-display" class="glass-card main-display">
-                        <p class="empty-msg">Rescue or select a cat to view genetic data</p>
+        <div id="focus-area" class="tab-content active">
+            <div class="focus-split-container">
+                <div id="active-cat-column" class="focus-main-card">
+                    <div id="active-cat-display" class="glass-card">
+                        <p style="text-align: center; color: var(--text-dim); padding: 50px;">Select a cat to view details.</p>
                     </div>
                 </div>
-
-                <aside class="breeding-sidebar glass-card">
-                    <h3 class="sidebar-title">Quick Selection</h3>
-                    <div class="sidebar-section">
-                        <span class="gender-label">Males</span>
-                        <div id="side-males-grid" class="mini-grid"></div>
-                    </div>
-                    <div class="sidebar-section">
-                        <span class="gender-label">Females</span>
-                        <div id="side-females-grid" class="mini-grid"></div>
-                    </div>
-                </aside>
+                <div class="focus-pedigree-column">
+                    <h3 class="sidebar-title">Pedigree & Progeny</h3>
+                    <div id="mini-pedigree-tree" class="mini-tree-container"></div>
+                </div>
             </div>
-        </section>
+        </div>
 
-        <section id="males-tab" class="tab-content">
+        <div id="breeding-area" class="tab-content">
+            <div class="breeding-setup-container">
+                <div class="breeding-box" id="male-stage">
+                    <h3>Sire (Male)</h3>
+                    <div id="male-selection-ui" class="selection-box-content">Select a male</div>
+                </div>
+                <div class="breeding-divider">
+                    <div id="breed-action-container" style="display: none;">
+                        <button class="action-btn breed-btn large-breed" onclick="breedSelected()">BREED</button>
+                    </div>
+                </div>
+                <div class="breeding-box" id="female-stage">
+                    <h3>Dam (Female)</h3>
+                    <div id="female-selection-ui" class="selection-box-content">Select a female</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="males-area" class="tab-content">
             <div class="automation-grid" id="males-grid"></div>
-        </section>
-
-        <section id="females-tab" class="tab-content">
+        </div>
+        <div id="females-area" class="tab-content">
             <div class="automation-grid" id="females-grid"></div>
-        </section>
-
-        <section id="pedigree-tab" class="tab-content">
-            <div class="glass-card full-pedigree-container">
-                <h2 class="section-title">Global Breeding History</h2>
-                <div id="global-tree-display" class="tree-viewer"></div>
+        </div>
+        <div id="pedigree-area" class="tab-content">
+            <div class="pedigree-scroller">
+                <div id="global-tree-display" class="pedigree-flex-container"></div>
             </div>
-        </section>
+        </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
